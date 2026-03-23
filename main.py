@@ -7,7 +7,7 @@ Asignacion = Tuple[str, str, int, int]
 def leer_tareas() -> List[Tarea]:
     tareas: List[Tarea] = []
 
-    with open("tareas.txt", "r") as archivo:
+    with open("tareas_EP.txt", "r") as archivo:
         for linea in archivo:
             linea = linea.strip()
             partes = linea.split(",")
@@ -24,7 +24,7 @@ def leer_tareas() -> List[Tarea]:
 def leer_recursos() -> Dict[str, List[str]]:
     recursos: Dict[str, List[str]] = {}
 
-    with open("recursos.txt", "r") as archivo:
+    with open("recursos_EP.txt", "r") as archivo:
         for linea in archivo:
             linea = linea.strip()
             partes = linea.split(",")
