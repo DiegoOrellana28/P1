@@ -1,3 +1,4 @@
+import sys
 from typing import List, Tuple, Dict
 
 Tarea = Tuple[str, int, str]
@@ -124,6 +125,14 @@ def calcular_makespan(cronograma: List[Asignacion]) -> int:
     return makespan
 
 def main() -> None:
+
+    if len(sys.argv) >= 2:
+        makespan_objetivo = int(sys.argv[1])
+        print("Makespan objetivo recibido:", makespan_objetivo)
+    else:
+        makespan_objetivo = None
+        print("No se ingresó makespan objetivo")
+
     tareas = leer_tareas()
     recursos = leer_recursos()
 
@@ -167,7 +176,15 @@ def main() -> None:
     print("Se generó el archivo output.txt")
     
     makespan = calcular_makespan(cronograma)
-    print("Makespan obtenido:", makespan)   
+    print("Makespan obtenido:", makespan)
+
+    if makespan_objetivo is not None:
+        print("Makespan objetivo:", makespan_objetivo)
+
+        if makespan <= makespan_objetivo:
+            print("La solución cumple el objetivo.")
+        else:
+            print("La solución no cumple el objetivo.") 
 
 if __name__ == "__main__":
     main()
