@@ -44,6 +44,19 @@ def ordenar_tareas(tareas: List[Tarea]) -> List[Tarea]:
     tareas_ordenadas = sorted(tareas, key=lambda tarea: tarea[1], reverse=True)
     return tareas_ordenadas
 
+def buscar_recursos_compatibles(
+    categoria: str, recursos: Dict[str, List[str]]
+) -> List[str]:
+    compatibles: List[str] = []
+
+    for id_recurso in recursos:
+        categorias = recursos[id_recurso]
+
+        if categoria in categorias:
+            compatibles.append(id_recurso)
+
+    return compatibles
+
 def main() -> None:
     tareas = leer_tareas()
     recursos = leer_recursos()
@@ -58,6 +71,14 @@ def main() -> None:
 
     print("Tareas ordenadas:")
     print(tareas_ordenadas)
+
+    primera_tarea = tareas_ordenadas[0]
+    categoria = primera_tarea[2]
+
+    compatibles = buscar_recursos_compatibles(categoria, recursos)
+
+    print("Recursos compatibles para la primera tarea:")
+    print(compatibles)
 
 
 if __name__ == "__main__":
