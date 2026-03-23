@@ -101,6 +101,17 @@ def planificar_tareas(
 
     return cronograma
 
+def escribir_output(cronograma: List[Asignacion]) -> None:
+    with open("output.txt", "w") as archivo:
+        for asignacion in cronograma:
+            id_tarea = asignacion[0]
+            id_recurso = asignacion[1]
+            inicio = asignacion[2]
+            fin = asignacion[3]
+
+            linea = id_tarea + "," + id_recurso + "," + str(inicio) + "," + str(fin)
+            archivo.write(linea + "\n")
+
 def main() -> None:
     tareas = leer_tareas()
     recursos = leer_recursos()
@@ -140,6 +151,9 @@ def main() -> None:
 
     for asignacion in cronograma:
         print(asignacion)
+
+    escribir_output(cronograma)
+    print("Se generó el archivo output.txt")    
 
 if __name__ == "__main__":
     main()
