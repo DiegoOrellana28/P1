@@ -112,6 +112,17 @@ def escribir_output(cronograma: List[Asignacion]) -> None:
             linea = id_tarea + "," + id_recurso + "," + str(inicio) + "," + str(fin)
             archivo.write(linea + "\n")
 
+def calcular_makespan(cronograma: List[Asignacion]) -> int:
+    makespan = 0
+
+    for asignacion in cronograma:
+        fin = asignacion[3]
+
+        if fin > makespan:
+            makespan = fin
+
+    return makespan
+
 def main() -> None:
     tareas = leer_tareas()
     recursos = leer_recursos()
@@ -153,7 +164,10 @@ def main() -> None:
         print(asignacion)
 
     escribir_output(cronograma)
-    print("Se generó el archivo output.txt")    
+    print("Se generó el archivo output.txt")
+    
+    makespan = calcular_makespan(cronograma)
+    print("Makespan obtenido:", makespan)   
 
 if __name__ == "__main__":
     main()
