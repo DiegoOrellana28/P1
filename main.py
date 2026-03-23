@@ -57,6 +57,21 @@ def buscar_recursos_compatibles(
 
     return compatibles
 
+def buscar_recurso_mas_libre(
+    compatibles: List[str], tiempo_libre: Dict[str, int]
+) -> str:
+    mejor_recurso = compatibles[0]
+    menor_tiempo = tiempo_libre[mejor_recurso]
+
+    for id_recurso in compatibles:
+        tiempo_actual = tiempo_libre[id_recurso]
+
+        if tiempo_actual < menor_tiempo:
+            menor_tiempo = tiempo_actual
+            mejor_recurso = id_recurso
+
+    return mejor_recurso
+
 def main() -> None:
     tareas = leer_tareas()
     recursos = leer_recursos()
@@ -80,6 +95,14 @@ def main() -> None:
     print("Recursos compatibles para la primera tarea:")
     print(compatibles)
 
+    tiempo_libre: Dict[str, int] = {}
+    for id_recurso in recursos:
+        tiempo_libre[id_recurso] = 0
+
+    mejor_recurso = buscar_recurso_mas_libre(compatibles, tiempo_libre)
+
+    print("Recurso más libre:")
+    print(mejor_recurso)
 
 if __name__ == "__main__":
     main()
