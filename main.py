@@ -72,6 +72,35 @@ def buscar_recurso_mas_libre(
 
     return mejor_recurso
 
+def planificar_tareas(
+    tareas: List[Tarea], recursos: Dict[str, List[str]]
+) -> List[Asignacion]:
+    tareas_ordenadas = ordenar_tareas(tareas)
+
+    tiempo_libre: Dict[str, int] = {}
+    for id_recurso in recursos:
+        tiempo_libre[id_recurso] = 0
+
+    cronograma: List[Asignacion] = []
+
+    for tarea in tareas_ordenadas:
+        id_tarea = tarea[0]
+        duracion = tarea[1]
+        categoria = tarea[2]
+
+        compatibles = buscar_recursos_compatibles(categoria, recursos)
+        mejor_recurso = buscar_recurso_mas_libre(compatibles, tiempo_libre)
+
+        inicio = tiempo_libre[mejor_recurso]
+        fin = inicio + duracion
+
+        asignacion: Asignacion = (id_tarea, mejor_recurso, inicio, fin)
+        cronograma.append(asignacion)
+
+        tiempo_libre[mejor_recurso] = fin
+
+    return cronograma
+
 def main() -> None:
     tareas = leer_tareas()
     recursos = leer_recursos()
@@ -103,6 +132,14 @@ def main() -> None:
 
     print("Recurso más libre:")
     print(mejor_recurso)
+
+    cronograma = planificar_tareas(tareas, recursos)
+
+    print("Cronograma:")
+    print(cronograma)
+
+    for asignacion in cronograma:
+        print(asignacion)
 
 if __name__ == "__main__":
     main()
