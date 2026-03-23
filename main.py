@@ -1,32 +1,55 @@
 from typing import List, Tuple, Dict
 
-# Tarea: (id, duracion, categoria)
-def leer_tareas() -> List[Tuple[str, int, str]]:
-    tareas = []
-    with open("tareas.txt", "r") as f:
-        for linea in f:
-            partes = linea.strip().split(",")
-            tarea_id = partes[0]
+Tarea = Tuple[str, int, str]
+Asignacion = Tuple[str, str, int, int]
+
+def leer_tareas() -> List[Tarea]:
+    tareas: List[Tarea] = []
+
+    with open("tareas.txt", "r") as archivo:
+        for linea in archivo:
+            linea = linea.strip()
+            partes = linea.split(",")
+
+            id_tarea = partes[0]
             duracion = int(partes[1])
             categoria = partes[2]
-            tareas.append((tarea_id, duracion, categoria))
+
+            tarea: Tarea = (id_tarea, duracion, categoria)
+            tareas.append(tarea)
+
     return tareas
 
-
-# Recursos: {id: [categorias]}
 def leer_recursos() -> Dict[str, List[str]]:
-    recursos = {}
-    with open("recursos.txt", "r") as f:
-        for linea in f:
-            partes = linea.strip().split(",")
-            recurso_id = partes[0]
-            categorias = partes[1:]
-            recursos[recurso_id] = categorias
+    recursos: Dict[str, List[str]] = {}
+
+    with open("recursos.txt", "r") as archivo:
+        for linea in archivo:
+            linea = linea.strip()
+            partes = linea.split(",")
+
+            id_recurso = partes[0]
+            categorias: List[str] = []
+
+            i = 1
+            while i < len(partes):
+                categorias.append(partes[i])
+                i += 1
+
+            recursos[id_recurso] = categorias
+
     return recursos
 
-if __name__ == "__main__":
+def main() -> None:
     tareas = leer_tareas()
     recursos = leer_recursos()
 
-    print("Tareas:", tareas)
-    print("Recursos:", recursos)
+    print("Tareas leídas:")
+    print(tareas)
+
+    print("Recursos leídos:")
+    print(recursos)
+
+
+if __name__ == "__main__":
+    main()
