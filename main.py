@@ -40,6 +40,10 @@ def leer_recursos() -> Dict[str, List[str]]:
 
     return recursos
 
+def ordenar_tareas(tareas: List[Tarea]) -> List[Tarea]:
+    tareas_ordenadas = sorted(tareas, key=lambda tarea: tarea[1], reverse=True)
+    return tareas_ordenadas
+
 def main() -> None:
     tareas = leer_tareas()
     recursos = leer_recursos()
@@ -49,6 +53,11 @@ def main() -> None:
 
     print("Recursos leídos:")
     print(recursos)
+
+    tareas_ordenadas = ordenar_tareas(tareas)
+
+    print("Tareas ordenadas:")
+    print(tareas_ordenadas)
 
 
 if __name__ == "__main__":
