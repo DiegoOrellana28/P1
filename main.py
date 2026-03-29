@@ -7,7 +7,7 @@ Asignacion = Tuple[str, str, int, int]
 def leer_tareas() -> List[Tarea]:
     tareas: List[Tarea] = []
 
-    with open("tareas_EP.txt", "r") as archivo:
+    with open("tareas.txt", "r") as archivo:
         for linea in archivo:
             linea = linea.strip()
             partes = linea.split(",")
@@ -24,7 +24,7 @@ def leer_tareas() -> List[Tarea]:
 def leer_recursos() -> Dict[str, List[str]]:
     recursos: Dict[str, List[str]] = {}
 
-    with open("recursos_EP.txt", "r") as archivo:
+    with open("recursos.txt", "r") as archivo:
         for linea in archivo:
             linea = linea.strip()
             partes = linea.split(",")
@@ -40,6 +40,21 @@ def leer_recursos() -> Dict[str, List[str]]:
             recursos[id_recurso] = categorias
 
     return recursos
+
+def construir_indice_categoria_recurso(
+    recursos: Dict[str, List[str]]
+) -> Dict[str, List[str]]:
+
+    indice: Dict[str, List[str]] = {}
+
+    for id_recurso in recursos:
+        for categoria in recursos[id_recurso]:
+            if categoria not in indice:
+                indice[categoria] = []
+
+            indice[categoria].append(id_recurso)
+
+    return indice
 
 def ordenar_tareas(tareas: List[Tarea]) -> List[Tarea]:
     tareas_ordenadas = sorted(tareas, key=lambda tarea: tarea[1], reverse=True)
