@@ -41,10 +41,7 @@ def leer_recursos() -> Dict[str, List[str]]:
 
     return recursos
 
-def construir_indice_categoria_recurso(
-    recursos: Dict[str, List[str]]
-) -> Dict[str, List[str]]:
-
+def construir_indice_categoria_recurso(recursos: Dict[str, List[str]] ) -> Dict[str, List[str]]:
     indice: Dict[str, List[str]] = {}
 
     for id_recurso in recursos:
@@ -60,22 +57,10 @@ def ordenar_tareas(tareas: List[Tarea]) -> List[Tarea]:
     tareas_ordenadas = sorted(tareas, key=lambda tarea: tarea[1], reverse=True)
     return tareas_ordenadas
 
-def buscar_recursos_compatibles(
-    categoria: str, recursos: Dict[str, List[str]]
-) -> List[str]:
-    compatibles: List[str] = []
+def buscar_recursos_compatibles(categoria: str, indice_categoria: Dict[str, List[str]]) -> List[str]:
+    return indice_categoria[categoria]
 
-    for id_recurso in recursos:
-        categorias = recursos[id_recurso]
-
-        if categoria in categorias:
-            compatibles.append(id_recurso)
-
-    return compatibles
-
-def buscar_recurso_mas_libre(
-    compatibles: List[str], tiempo_libre: Dict[str, int]
-) -> str:
+def buscar_recurso_mas_libre(compatibles: List[str], tiempo_libre: Dict[str, int]) -> str:
     mejor_recurso = compatibles[0]
     menor_tiempo = tiempo_libre[mejor_recurso]
 
@@ -88,12 +73,12 @@ def buscar_recurso_mas_libre(
 
     return mejor_recurso
 
-def planificar_tareas(
-    tareas: List[Tarea], recursos: Dict[str, List[str]]
-) -> List[Asignacion]:
+def planificar_tareas(tareas: List[Tarea], recursos: Dict[str, List[str]]) -> List[Asignacion]:
+    indice_categoria = construir_indice_categoria_recurso(recursos)
     tareas_ordenadas = ordenar_tareas(tareas)
 
     tiempo_libre: Dict[str, int] = {}
+
     for id_recurso in recursos:
         tiempo_libre[id_recurso] = 0
 
@@ -104,7 +89,7 @@ def planificar_tareas(
         duracion = tarea[1]
         categoria = tarea[2]
 
-        compatibles = buscar_recursos_compatibles(categoria, recursos)
+        compatibles = buscar_recursos_compatibles(categoria, indice_categoria)
         mejor_recurso = buscar_recurso_mas_libre(compatibles, tiempo_libre)
 
         inicio = tiempo_libre[mejor_recurso]
@@ -151,24 +136,14 @@ def main() -> None:
     tareas = leer_tareas()
     recursos = leer_recursos()
 
-    print("Tareas leídas:")
-    print(tareas)
-
-    print("Recursos leídos:")
-    print(recursos)
-
+    indice_categoria = construir_indice_categoria_recurso(recursos)
+    
     tareas_ordenadas = ordenar_tareas(tareas)
-
-    print("Tareas ordenadas:")
-    print(tareas_ordenadas)
 
     primera_tarea = tareas_ordenadas[0]
     categoria = primera_tarea[2]
 
-    compatibles = buscar_recursos_compatibles(categoria, recursos)
-
-    print("Recursos compatibles para la primera tarea:")
-    print(compatibles)
+    compatibles = buscar_recursos_compatibles(categoria, indice_categoria)
 
     tiempo_libre: Dict[str, int] = {}
     for id_recurso in recursos:
@@ -176,20 +151,13 @@ def main() -> None:
 
     mejor_recurso = buscar_recurso_mas_libre(compatibles, tiempo_libre)
 
-    print("Recurso más libre:")
-    print(mejor_recurso)
-
     cronograma = planificar_tareas(tareas, recursos)
-
-    print("Cronograma:")
-    print(cronograma)
 
     for asignacion in cronograma:
         print(asignacion)
 
     escribir_output(cronograma)
-    print("Se generó el archivo output.txt")
-    
+  
     makespan = calcular_makespan(cronograma)
     print("Makespan obtenido:", makespan)
 
