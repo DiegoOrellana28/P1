@@ -85,16 +85,26 @@ def ordenar_tareas(
 def buscar_recursos_compatibles(categoria: str, indice_categoria: Dict[str, List[str]]) -> List[str]:
     return indice_categoria[categoria]
 
-def buscar_recurso_mas_libre(compatibles: List[str], tiempo_libre: Dict[str, int]) -> str:
+def buscar_mejor_recurso(
+    compatibles: List[str],
+    tiempo_libre: Dict[str, int],
+    recursos: Dict[str, List[str]],
+    duracion: int
+) -> str:
+
     mejor_recurso = compatibles[0]
-    menor_tiempo = tiempo_libre[mejor_recurso]
+    mejor_fin = tiempo_libre[mejor_recurso] + duracion
 
     for id_recurso in compatibles:
-        tiempo_actual = tiempo_libre[id_recurso]
+        fin_actual = tiempo_libre[id_recurso] + duracion
 
-        if tiempo_actual < menor_tiempo:
-            menor_tiempo = tiempo_actual
+        if fin_actual < mejor_fin:
+            mejor_fin = fin_actual
             mejor_recurso = id_recurso
+
+        elif fin_actual == mejor_fin:
+            if len(recursos[id_recurso]) < len(recursos[mejor_recurso]):
+                mejor_recurso = id_recurso
 
     return mejor_recurso
 
@@ -115,7 +125,7 @@ def planificar_tareas(tareas: List[Tarea], recursos: Dict[str, List[str]]) -> Li
         categoria = tarea[2]
 
         compatibles = buscar_recursos_compatibles(categoria, indice_categoria)
-        mejor_recurso = buscar_recurso_mas_libre(compatibles, tiempo_libre)
+        mejor_recurso = buscar_mejor_recurso(compatibles,tiempo_libre,recursos,duracion)
 
         inicio = tiempo_libre[mejor_recurso]
         fin = inicio + duracion
@@ -173,8 +183,7 @@ def main() -> None:
     tiempo_libre: Dict[str, int] = {}
     for id_recurso in recursos:
         tiempo_libre[id_recurso] = 0
-
-    mejor_recurso = buscar_recurso_mas_libre(compatibles, tiempo_libre)
+    mejor_recurso = buscar_mejor_recurso(compatibles,tiempo_libre,recursos,primera_tarea[1])
 
     cronograma = planificar_tareas(tareas, recursos)
 
