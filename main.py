@@ -1,4 +1,5 @@
 import sys
+import time
 from typing import List, Tuple, Dict
 
 
@@ -165,7 +166,9 @@ def calcular_makespan(cronograma: List[Asignacion]) -> int:
 
 
 def main() -> None:
-    
+
+    inicio = time.time()
+
     if len(sys.argv) >= 2:
         makespan_objetivo = int(sys.argv[1])
 
@@ -183,6 +186,7 @@ def main() -> None:
     makespan = calcular_makespan(cronograma)
     print("Makespan obtenido:", makespan)
 
+
     if makespan_objetivo is not None:
         print("Makespan objetivo:", makespan_objetivo)
 
@@ -190,6 +194,10 @@ def main() -> None:
             print("La solución cumple el objetivo.")
         else:
             print("La solución no cumple el objetivo.")
+    
+    fin = time.time()
+
+    print("Tiempo de ejecución:", round(fin - inicio, 4), "segundos")
 
 
 if __name__ == "__main__":
