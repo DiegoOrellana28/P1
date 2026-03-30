@@ -53,8 +53,33 @@ def construir_indice_categoria_recurso(recursos: Dict[str, List[str]] ) -> Dict[
 
     return indice
 
-def ordenar_tareas(tareas: List[Tarea]) -> List[Tarea]:
-    tareas_ordenadas = sorted(tareas, key=lambda tarea: tarea[1], reverse=True)
+def calcular_score_tarea(
+    tarea: Tarea,
+    indice_categoria: Dict[str, List[str]]
+) -> float:
+
+    _, duracion, categoria = tarea
+
+    compatibles = indice_categoria[categoria]
+    cantidad = len(compatibles)
+
+    return duracion / cantidad
+
+def ordenar_tareas(
+    tareas: List[Tarea],
+    indice_categoria: Dict[str, List[str]]
+) -> List[Tarea]:
+
+    def clave_ordenamiento(tarea: Tarea):
+
+        score = calcular_score_tarea(tarea, indice_categoria)
+        duracion = tarea[1]
+        id_tarea = tarea[0]
+
+        return (-score, -duracion, id_tarea)
+
+    tareas_ordenadas = sorted(tareas, key=clave_ordenamiento)
+
     return tareas_ordenadas
 
 def buscar_recursos_compatibles(categoria: str, indice_categoria: Dict[str, List[str]]) -> List[str]:
@@ -75,7 +100,7 @@ def buscar_recurso_mas_libre(compatibles: List[str], tiempo_libre: Dict[str, int
 
 def planificar_tareas(tareas: List[Tarea], recursos: Dict[str, List[str]]) -> List[Asignacion]:
     indice_categoria = construir_indice_categoria_recurso(recursos)
-    tareas_ordenadas = ordenar_tareas(tareas)
+    tareas_ordenadas = ordenar_tareas(tareas, indice_categoria)
 
     tiempo_libre: Dict[str, int] = {}
 
@@ -138,7 +163,7 @@ def main() -> None:
 
     indice_categoria = construir_indice_categoria_recurso(recursos)
     
-    tareas_ordenadas = ordenar_tareas(tareas)
+    tareas_ordenadas = ordenar_tareas(tareas, indice_categoria)
 
     primera_tarea = tareas_ordenadas[0]
     categoria = primera_tarea[2]
